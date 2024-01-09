@@ -1,0 +1,175 @@
+menu "Hourglass GPIO Configuration"
+
+    orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+
+    config GPIO_RD_0
+        int "74HC573 output pin 0"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 1 
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_0.
+
+    config GPIO_RD_1
+        int "74HC573 output pin 1"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 2
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_1.
+
+    config GPIO_RD_2
+        int "74HC573 output pin 2"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 3
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_2.
+
+    config GPIO_RD_3
+        int "74HC573 output pin 3"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 4
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_3.
+
+    config GPIO_RD_4
+        int "74HC573 output pin 4"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 5
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_4.
+
+    config GPIO_RD_5
+        int "74HC573 output pin 5"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 6
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_5.
+
+    config GPIO_RD_6
+        int "74HC573 output pin 6"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 7
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_6.
+
+    config GPIO_RD_7
+        int "74HC573 output pin 7"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 8
+        help
+            GPIO pin number to be used as CONFIG_GPIO_RD_7.
+
+
+    config GPIO_G_0
+        int "Gound output pin 0"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 12 
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_0.
+
+    config GPIO_G_1
+        int "Gound output pin 1"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 11 
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_1.
+
+    config GPIO_G_2
+        int "Gound output pin 2"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 10
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_2.
+
+    config GPIO_G_3
+        int "Gound output pin 3"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 9
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_3.
+
+    config GPIO_G_4
+        int "Gound output pin 4"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 13
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_4.
+
+    config GPIO_G_5
+        int "Gound output pin 5"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 14
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_5.
+
+    config GPIO_G_6
+        int "Gound output pin 6"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 15
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_6.
+
+    config GPIO_G_7
+        int "Gound output pin 7"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 16
+        help
+            GPIO pin number to be used as CONFIG_GPIO_G_7.
+
+
+    config GPIO_L_0
+        int "Level output pin 0"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 37 
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_0.
+
+    config GPIO_L_1
+        int "Level output pin 1"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 36
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_1.
+
+    config GPIO_L_2
+        int "Level output pin 2"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 35
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_2.
+
+    config GPIO_L_3
+        int "Level output pin 3"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 21
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_3.
+
+    config GPIO_L_4
+        int "Level output pin 4"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 20
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_4.
+
+    config GPIO_L_5
+        int "Level output pin 5"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 19 
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_5.
+
+    config GPIO_L_6
+        int "Level output pin 6"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 18
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_6.
+
+    config GPIO_L_7
+        int "Level output pin 7"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 17
+        help
+            GPIO pin number to be used as CONFIG_GPIO_L_7.
+
+endmenu

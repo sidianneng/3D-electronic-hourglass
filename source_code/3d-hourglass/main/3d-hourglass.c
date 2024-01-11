@@ -53,7 +53,6 @@ static void led_cube_display(void* arg)
 
     //display ledcube
     for(;;) {
-        vTaskDelay(25 / portTICK_PERIOD_MS);//update rate 1000/25=40
         for(uint8_t level = 0;level < 8; level++) {
 	    for(uint8_t line = 0;line < 8; line++) {
 	        data_tmp = ledcube_data[level * 8 + line];
@@ -70,7 +69,7 @@ static void led_cube_display(void* arg)
 	        else
 	            gpio_set_level(g_gpios[temp], 1);
 	    }
-	    vTaskDelay(25 / portTICK_PERIOD_MS);
+	    vTaskDelay(2 / portTICK_PERIOD_MS);
         }
     }
 }

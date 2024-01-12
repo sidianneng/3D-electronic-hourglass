@@ -4,6 +4,7 @@
 #include "freertos/queue.h"
 #include "freertos/FreeRTOSConfig.h"
 #include "driver/gpio.h"
+#include "ledcube_dis_ctl.h"
 
 //active low
 int rd_gpios[8] = {
@@ -93,6 +94,8 @@ void app_main(void)
     gpio_config(&io_conf);
 
     int cnt = 0;
+    int8_t led_state = 0;
+    cube_Init(ledcube_data, sizeof(ledcube_data));
 
     //close all the leds
     for(uint8_t i = 0;i < 8; ++i) {
@@ -103,25 +106,23 @@ void app_main(void)
         gpio_set_level(l_gpios[i], 1);
     }
 
-    for(uint8_t i = 0;i < 64; ++i)
-        ledcube_data[i] = 0x00;
-
     //create the data queue for led cube
     ledcube_data_queue = xQueueCreate(64, sizeof(uint8_t)); 
     //create the task for LED display 
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 
-    ledcube_data[0] = 0x01;
-    ledcube_data[9] = 0x02;
-    ledcube_data[18] = 0x04;
-    ledcube_data[27] = 0x08;
-    ledcube_data[36] = 0x10;
-    ledcube_data[45] = 0x20;
-    ledcube_data[54] = 0x40;
-    ledcube_data[63] = 0x80;
-
     while(1) {
 	vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        cube_SetXYZ(0, 0, 0, 1);
+	led_state = cube_GetXYZ(0, 0, 0);
+	printf("led_state1:%d\n", led_state);
+
+	vTaskDelay(500 / portTICK_PERIOD_MS);
+        cube_SetXYZ(0, 0, 0, 0);
+	led_state = cube_GetXYZ(0, 0, 0);
+	printf("led_state2:%d\n", led_state);
+
 	printf("cnt:%d\n", cnt++);
     }
 }

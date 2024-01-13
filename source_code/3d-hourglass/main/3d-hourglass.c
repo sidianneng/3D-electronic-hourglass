@@ -111,6 +111,15 @@ void app_main(void)
     //create the task for LED display 
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 
+    //plane equation x+y+z=10 for hourglass top
+    for(uint8_t i = 0;i < 8; i++)
+	for(uint8_t j = 0;j < 8; j++)
+            for(uint8_t k = 0;k < 8; k++) {
+		if(i + j + k == 10)
+		    cube_SetXYZ(i, j, k, 1);
+	    }
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
     while(1) {
 	vTaskDelay(500 / portTICK_PERIOD_MS);
 

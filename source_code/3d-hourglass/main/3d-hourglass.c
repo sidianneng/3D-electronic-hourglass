@@ -5,6 +5,7 @@
 #include "freertos/FreeRTOSConfig.h"
 #include "driver/gpio.h"
 #include "ledcube_dis_ctl.h"
+#include "hourglass.h"
 
 //active low
 int rd_gpios[8] = {
@@ -113,25 +114,28 @@ void app_main(void)
 
     //plane equation x+y+z=10 for hourglass top
     for(uint8_t i = 0;i < 8; i++)
-	for(uint8_t j = 0;j < 8; j++)
+        for(uint8_t j = 0;j < 8; j++)
             for(uint8_t k = 0;k < 8; k++) {
-		if(i + j + k == 10)
-		    cube_SetXYZ(i, j, k, 1);
-	    }
+        	if(i + j + k == 10)
+        	    cube_SetXYZ(i, j, k, 1);
+            }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
+    uint8_t h, i, j, k;
+    cube_SetXYZ(7, 7, 7, 1);
     while(1) {
-	vTaskDelay(500 / portTICK_PERIOD_MS);
-
-        cube_SetXYZ(0, 0, 0, 1);
-	led_state = cube_GetXYZ(0, 0, 0);
-	printf("led_state1:%d\n", led_state);
-
-	vTaskDelay(500 / portTICK_PERIOD_MS);
-        cube_SetXYZ(0, 0, 0, 0);
-	led_state = cube_GetXYZ(0, 0, 0);
-	printf("led_state2:%d\n", led_state);
-
+	vTaskDelay(100 / portTICK_PERIOD_MS);
+	//for(h = 11;h < 21; h++) 
+	{
+        for(i = 0;i < 8; i++)
+	    for(j = 0;j < 8; j++)	
+		for(k = 0;k < 8; k++){
+	            if(i + j + k >= 11)
+			hg_MoveSand(i, j, k);
+		}
+	}
 	printf("cnt:%d\n", cnt++);
+	if(cnt % 2 == 0)
+	    cube_SetXYZ(7, 7, 7, 1);
     }
 }

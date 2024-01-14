@@ -113,29 +113,36 @@ void app_main(void)
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 
     //plane equation x+y+z=10 for hourglass top
+    for(uint8_t h = 0;h <= 10; h++){
     for(uint8_t i = 0;i < 8; i++)
         for(uint8_t j = 0;j < 8; j++)
             for(uint8_t k = 0;k < 8; k++) {
-        	if(i + j + k == 10)
+        	if(i + j + k == h)
         	    cube_SetXYZ(i, j, k, 1);
             }
+    }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     uint8_t h, i, j, k;
     cube_SetXYZ(7, 7, 7, 1);
     while(1) {
 	vTaskDelay(100 / portTICK_PERIOD_MS);
-	//for(h = 11;h < 21; h++) 
-	{
+        for(i = 0;i < 8; i++)
+	    for(j = 0;j < 8; j++)	
+		for(k = 0;k < 8; k++){
+	            if(i + j + k <= 10)
+			hg_MoveSand(HG_TOP, i, j, k);
+		}
         for(i = 0;i < 8; i++)
 	    for(j = 0;j < 8; j++)	
 		for(k = 0;k < 8; k++){
 	            if(i + j + k >= 11)
-			hg_MoveSand(i, j, k);
+			hg_MoveSand(HG_BOTTOM, i, j, k);
 		}
-	}
 	printf("cnt:%d\n", cnt++);
-	if(cnt % 2 == 0)
-	    cube_SetXYZ(7, 7, 7, 1);
+	if(cnt % 2 == 0) {
+            cube_SetXYZ(7, 7, 7, 1);
+	    cube_SetXYZ(0, 0, 0, 0);
+	}
     }
 }

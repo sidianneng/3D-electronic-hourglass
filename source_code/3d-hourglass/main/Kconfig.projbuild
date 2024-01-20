@@ -172,4 +172,18 @@ menu "Hourglass GPIO Configuration"
         help
             GPIO pin number to be used as CONFIG_GPIO_L_7.
 
+    config GPIO_SCL
+	int "SCL GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+	default 38 
+	help
+	    GPIO number (IOxx) to I2C SCL.
+
+    config GPIO_SDA
+	int "SDA GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+	default 39 
+	help
+	    GPIO number (IOxx) of SDA.
+
 endmenu

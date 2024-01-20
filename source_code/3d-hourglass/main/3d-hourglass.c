@@ -6,6 +6,8 @@
 #include "driver/gpio.h"
 #include "ledcube_dis_ctl.h"
 #include "hourglass.h"
+#include "driver/i2c.h"
+#include "parameter.h"
 
 //active low
 int rd_gpios[8] = {
@@ -59,21 +61,34 @@ static void led_cube_display(void* arg)
 	    for(uint8_t line = 0;line < 8; line++) {
 	        data_tmp = ledcube_data[level * 8 + line];
 	        for(uint8_t bit = 0;bit < 8; bit++) {
-	            gpio_set_level(rd_gpios[bit], !(data_tmp & 0x01));
+	            gpio_set_level((gpio_num_t)rd_gpios[bit], !(data_tmp & 0x01));
 		    data_tmp = (data_tmp >> 1);
                 }
-	        gpio_set_level(l_gpios[line], 1);
-	        gpio_set_level(l_gpios[line], 0);
+	        gpio_set_level((gpio_num_t)l_gpios[line], 1);
+	        gpio_set_level((gpio_num_t)l_gpios[line], 0);
 	    }
 	    for(uint8_t temp = 0;temp < 8; temp++) {
 	        if(temp == level)
-	            gpio_set_level(g_gpios[temp], 0);
+	            gpio_set_level((gpio_num_t)g_gpios[temp], 0);
 	        else
-	            gpio_set_level(g_gpios[temp], 1);
+	            gpio_set_level((gpio_num_t)g_gpios[temp], 1);
 	    }
 	    vTaskDelay(2 / portTICK_PERIOD_MS);
         }
     }
+}
+
+void start_i2c(void) {
+	i2c_config_t conf;
+	conf.mode = I2C_MODE_MASTER;
+	conf.sda_io_num = (gpio_num_t)CONFIG_GPIO_SDA;
+	conf.scl_io_num = (gpio_num_t)CONFIG_GPIO_SCL;
+	conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.master.clk_speed = 400000;
+	conf.clk_flags = 0;
+	ESP_ERROR_CHECK(i2c_param_config(I2C_NUM_0, &conf));
+	ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0));
 }
 
 void app_main(void)
@@ -88,11 +103,14 @@ void app_main(void)
     for(uint8_t i = 0;i < 8; ++i)
         io_conf.pin_bit_mask |= ((1ULL << rd_gpios[i]) | (1ULL << g_gpios[i]) | (1ULL << l_gpios[i]));
     //disable pull-down mode
-    io_conf.pull_down_en = 0;
+    io_conf.pull_down_en = (gpio_pulldown_t)0;
     //disable pull-up mode
-    io_conf.pull_up_en = 0;
+    io_conf.pull_up_en = (gpio_pullup_t)0;
     //configure GPIO with the given settings
     gpio_config(&io_conf);
+
+    //Init i2c
+    start_i2c();
 
     int cnt = 0;
     int8_t led_state = 0;
@@ -100,17 +118,20 @@ void app_main(void)
 
     //close all the leds
     for(uint8_t i = 0;i < 8; ++i) {
-	gpio_set_level(g_gpios[i], 1);
-        gpio_set_level(rd_gpios[i], 1);
+	gpio_set_level((gpio_num_t)g_gpios[i], 1);
+        gpio_set_level((gpio_num_t)rd_gpios[i], 1);
     }
     for(uint8_t i = 0;i < 8; ++i) {
-        gpio_set_level(l_gpios[i], 1);
+        gpio_set_level((gpio_num_t)l_gpios[i], 1);
     }
 
     //create the data queue for led cube
     ledcube_data_queue = xQueueCreate(64, sizeof(uint8_t)); 
     //create the task for LED display 
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
+
+    //create the task for IMU
+    xTaskCreate(mpu6050, "IMU", 1024*8, NULL, 10, NULL);
 
     //plane equation x+y+z=10 for hourglass top
     for(uint8_t h = 0;h <= 10; h++){
@@ -126,7 +147,7 @@ void app_main(void)
     uint8_t h, i, j, k;
     cube_SetXYZ(7, 7, 7, 1);
     while(1) {
-	vTaskDelay(100 / portTICK_PERIOD_MS);
+	vTaskDelay(500 / portTICK_PERIOD_MS);
         for(i = 0;i < 8; i++)
 	    for(j = 0;j < 8; j++)	
 		for(k = 0;k < 8; k++){

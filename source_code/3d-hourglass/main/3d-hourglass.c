@@ -193,12 +193,13 @@ void app_main(void)
 			    led_num++;
 			    if(led_num >= 56) {
 				led_num = 0;
-				break;
+				goto finish;
 			    }
 			}
 		    }
         //vTaskDelay(1000 / portTICK_PERIOD_MS);
 	}
+finish:
 	//if(cnt % 2 == 0) {
         //    cube_SetXYZ(7, 7, 7, 1);
 	//    cube_SetXYZ(0, 0, 0, 0);

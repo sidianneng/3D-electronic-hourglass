@@ -153,7 +153,7 @@ void app_main(void)
     //cube_SetXYZ(7, 7, 7, 1);
     float A, B, C;
     float yaw, pitch, roll;
-    uint8_t led_num = 0;
+    uint16_t led_num = 0;
     uint8_t tmp_cnt = 0;
     while(1) {
 	vTaskDelay(50 / portTICK_PERIOD_MS);

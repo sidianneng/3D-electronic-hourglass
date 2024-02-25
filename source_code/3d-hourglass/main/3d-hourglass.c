@@ -193,7 +193,7 @@ void app_main(void)
             for(uint8_t i = 0;i < 8; i++)
                 for(uint8_t j = 0;j < 8; j++)
                     for(uint8_t k = 0;k < 8; k++) {
-			if(A*i + B*j + C*k >= h) {
+			if(A*i + B*j + C*k >= h && i + j + k >= 11) {
 			    cube_SetXYZ(i, j, k, 1);
 			    led_num++;
 			    if(led_num >= 256) {

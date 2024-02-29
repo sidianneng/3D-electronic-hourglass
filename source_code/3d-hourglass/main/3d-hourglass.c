@@ -134,75 +134,50 @@ void app_main(void)
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 
     //create the task for IMU
-    xTaskCreate(mpu6050, "IMU", 1024*8, NULL, 10, NULL);
+    //xTaskCreate(mpu6050, "IMU", 1024*8, NULL, 10, NULL);
 
     //plane equation x+y+z=10 for hourglass top
-    for(uint8_t h = 0;h <= 5; h++){
-    for(uint8_t i = 0;i < 8; i++)
-        for(uint8_t j = 0;j < 8; j++)
-            for(uint8_t k = 0;k < 8; k++) {
-        	if(i + j + k == h)
-        	    cube_SetXYZ(i, j, k, 1);
+    int8_t h, i, j, k;
+    for(h = -3;h >= -13; h--){
+        for(i = -1;i >= -8; i--) {
+            for(j = -1;j >= -8; j--) {
+                for(k = -1;k >= -8; k--) {
+            	if(i + j + k == h)
+            	    cube_SetXYZ(i, j, k, 1);
+                }
             }
+        }
+    }
+    for(h = 0;h <= 10; h++){
+        for(i = 0;i < 8; i++) {
+            for(j = 0;j < 8; j++) {
+                for(k = 0;k < 8; k++) {
+            	if(i + j + k == h)
+            	    cube_SetXYZ(i, j, k, 1);
+                }
+            }
+        }
     }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    uint8_t h, i, j, k;
-    //cube_SetXYZ(7, 7, 7, 1);
-    float A, B, C;
-    float yaw, pitch, roll;
-    uint8_t led_num = 0;
     while(1) {
-	vTaskDelay(50 / portTICK_PERIOD_MS);
-        //for(i = 0;i < 8; i++)
-	//    for(j = 0;j < 8; j++)	
-	//	for(k = 0;k < 8; k++){
-	//            if(i + j + k <= 10)
-	//		hg_MoveSand(HG_TOP, i, j, k);
-	//	}
-        //for(i = 0;i < 8; i++)
-	//    for(j = 0;j < 8; j++)	
-	//	for(k = 0;k < 8; k++){
-	//            if(i + j + k >= 11)
-	//		hg_MoveSand(HG_BOTTOM, i, j, k);
-	//	}
-        for(uint8_t h = 0;h <= 22; h++){
-        for(uint8_t i = 0;i < 8; i++)
-            for(uint8_t j = 0;j < 8; j++)
-                for(uint8_t k = 0;k < 8; k++) {
-            	if(i + j + k == h)
-            	    cube_SetXYZ(i, j, k, 0);
-                }
-        }
-        //vTaskDelay(1000 / portTICK_PERIOD_MS);
+	vTaskDelay(100 / portTICK_PERIOD_MS);
+        for(i = 7;i >= 0; i--)
+	    for(j = 7;j >= 0; j--)	
+		for(k = 7;k >= 0; k--){
+	            if(i + j + k <= 10)
+			hg_MoveSand(HG_TOP, HG_UP, i, j, k);
+		}
+        for(i = -8;i <= -1; i++)
+	    for(j = -8;j <= -1; j++)	
+		for(k = -8;k <= -1; k++){
+	            if(i + j + k >= -13)
+			hg_MoveSand(HG_BOTTOM, HG_UP, i, j, k);
+		}
 	printf("cnt:%d\n", cnt++);
-	//printf("yaw:%f pitch:%f roll:%f\n", ypr[0], ypr[1], ypr[2]);
-	yaw = ypr[0];
-	pitch= ypr[1];
-	roll = ypr[2];
-	A = cos(yaw)*cos(roll) + (sin(pitch)*sin(yaw)*cos(roll) - cos(pitch)*sin(roll)) + (sin(yaw)*cos(pitch)*cos(roll) + sin(pitch)*sin(roll));
-	B = cos(yaw)*sin(roll) + (sin(pitch)*sin(yaw)*sin(roll) + cos(pitch)*cos(roll)) + (sin(yaw)*sin(roll)*cos(pitch) - sin(pitch)*cos(roll));
-	C = (-1)*sin(yaw) + sin(pitch)*cos(yaw) + cos(pitch)*cos(yaw);
-	printf("A:%f B:%f C:%f\n", A, B, C);
-        for(uint8_t h = 0;h <= 4; h++){
-            for(uint8_t i = 0;i < 8; i++)
-                for(uint8_t j = 0;j < 8; j++)
-                    for(uint8_t k = 0;k < 8; k++) {
-			if(A*i + B*j + C*k <= h) {
-			    cube_SetXYZ(i, j, k, 1);
-			    led_num++;
-			    if(led_num >= 56) {
-				led_num = 0;
-				goto finish;
-			    }
-			}
-		    }
-        //vTaskDelay(1000 / portTICK_PERIOD_MS);
+	if(cnt % 2 == 0) {
+            cube_SetXYZ(-1, -1, -1, 0);
+	    cube_SetXYZ(0, 0, 0, 0);
 	}
-finish:
-	//if(cnt % 2 == 0) {
-        //    cube_SetXYZ(7, 7, 7, 1);
-	//    cube_SetXYZ(0, 0, 0, 0);
-	//}
     }
 }

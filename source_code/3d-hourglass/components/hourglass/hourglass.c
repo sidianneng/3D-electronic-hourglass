@@ -56,14 +56,10 @@ static bool sand_CanGoDown(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t 
     if(id == HG_TOP){
         if(x + 1 + y + 1 + z + 1 > 10 || x == 7 || y == 7 || z == 7)
     	    return false;
-        //if(sand_CanGoX(id, state, x, y, z) || sand_CanGoY(id, state, x, y, z) || sand_CanGoZ(id, state, x, y, z))
-  	//    return false;
 	result = (state == HG_UP ? cube_GetXYZ(x + 1, y + 1, z + 1) : !cube_GetXYZ(x + 1, y + 1, z + 1));
     } else {
         if(x - 1 + y - 1 + z - 1 < -13 || x == -8 || y == -8 || z == -8)
     	    return false;
-        //if(!sand_CanGoX(id, state, x, y, z) || !sand_CanGoY(id, state, x, y, z) || !sand_CanGoZ(id, state, x, y, z))
-	//    return false;
 	result = (state == HG_UP ? cube_GetXYZ(x - 1, y - 1, z - 1) : !cube_GetXYZ(x - 1, y - 1, z - 1));
     }
 

@@ -12,7 +12,7 @@ static bool sand_CanGoX(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
 	    return false;
 	result = (state == HG_UP ? cube_GetXYZ(x + 1, y, z) : !cube_GetXYZ(x + 1, y, z));
     } else {
-	if(x == -7 || x - 1 + y + z < -13)
+	if(x == -8 || x - 1 + y + z < -13)
 	    return false;
 	result = (state == HG_UP ? cube_GetXYZ(x - 1, y, z) : !cube_GetXYZ(x - 1, y, z));
     }
@@ -28,7 +28,7 @@ static bool sand_CanGoY(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
             return false;
 	result = (state == HG_UP ? cube_GetXYZ(x, y + 1, z) : !cube_GetXYZ(x, y + 1, z));
     } else {
-        if(y == 0 || x + y - 1 + z < -13)
+        if(y == -8 || x + y - 1 + z < -13)
             return false;
 	result = (state == HG_UP ? cube_GetXYZ(x, y - 1, z) : !cube_GetXYZ(x, y - 1, z));
     }
@@ -43,7 +43,7 @@ static bool sand_CanGoZ(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
             return false;
 	result = (state == HG_UP ? cube_GetXYZ(x, y, z + 1) : !cube_GetXYZ(x, y, z + 1));
     } else {
-        if(z == 0 || x + y + z - 1 < -13)
+        if(z == -8 || x + y + z - 1 < -13)
             return false;
 	result = (state == HG_UP ? cube_GetXYZ(x, y, z - 1) : !cube_GetXYZ(x, y, z - 1));
     }
@@ -56,15 +56,15 @@ static bool sand_CanGoDown(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t 
     if(id == HG_TOP){
         if(x + 1 + y + 1 + z + 1 > 10 || x == 7 || y == 7 || z == 7)
     	    return false;
-        if(sand_CanGoX(id, state, x, y, z) || sand_CanGoY(id, state, x, y, z) || sand_CanGoZ(id, state, x, y, z))
-  	    return false;
-        result = !cube_GetXYZ(x + 1, y + 1, z + 1);
+        //if(sand_CanGoX(id, state, x, y, z) || sand_CanGoY(id, state, x, y, z) || sand_CanGoZ(id, state, x, y, z))
+  	//    return false;
+	result = (state == HG_UP ? cube_GetXYZ(x + 1, y + 1, z + 1) : !cube_GetXYZ(x + 1, y + 1, z + 1));
     } else {
-        if(x - 1 + y - 1 + z - 1 <= 13 || x == 0 || y == 0 || z == 0)
+        if(x - 1 + y - 1 + z - 1 < -13 || x == -8 || y == -8 || z == -8)
     	    return false;
-        if(!sand_CanGoX(id, state, x, y, z) || !sand_CanGoY(id, state, x, y, z) || !sand_CanGoZ(id, state, x, y, z))
-	    return false;
-        result = !cube_GetXYZ(x - 1, y - 1, z - 1);
+        //if(!sand_CanGoX(id, state, x, y, z) || !sand_CanGoY(id, state, x, y, z) || !sand_CanGoZ(id, state, x, y, z))
+	//    return false;
+	result = (state == HG_UP ? cube_GetXYZ(x - 1, y - 1, z - 1) : !cube_GetXYZ(x - 1, y - 1, z - 1));
     }
 
     return result;
@@ -75,15 +75,8 @@ static void sand_GoDown(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
     uint8_t led_state;
     int8_t step_dir;
 
-    if(id == HG_TOP)
-	step_dir = 1;
-    else
-	step_dir = -1;
-    
-    if(state == HG_UP)
-        led_state = 1;
-    else
-        led_state = 0;
+    step_dir = (id == HG_TOP ? 1 : -1);
+    led_state = (state == HG_UP ? 1 : 0);
 
     cube_SetXYZ(x, y, z, led_state);
     cube_SetXYZ(x + step_dir, y + step_dir, z + step_dir, !led_state);
@@ -94,15 +87,8 @@ static void sand_GoX(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
     uint8_t led_state;
     int8_t step_dir;
 
-    if(id == HG_TOP)
-	step_dir = 1;
-    else
-	step_dir = -1;
-    
-    if(state == HG_UP)
-        led_state = 1;
-    else
-        led_state = 0;
+    step_dir = (id == HG_TOP ? 1 : -1);
+    led_state = (state == HG_UP ? 1 : 0);
 
     cube_SetXYZ(x, y, z, led_state);
     cube_SetXYZ(x + step_dir, y, z, !led_state);
@@ -113,15 +99,8 @@ static void sand_GoY(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
     uint8_t led_state;
     int8_t step_dir;
 
-    if(id == HG_TOP)
-        step_dir = 1;
-    else
-        step_dir = -1;
-
-    if(state == HG_UP)
-        led_state = 1;
-    else
-        led_state = 0;
+    step_dir = (id == HG_TOP ? 1 : -1);
+    led_state = (state == HG_UP ? 1 : 0);
 
     cube_SetXYZ(x, y, z, led_state);
     cube_SetXYZ(x, y + step_dir, z, !led_state);
@@ -132,15 +111,8 @@ static void sand_GoZ(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
     uint8_t led_state;
     int8_t step_dir;
 
-    if(id == HG_TOP)
-        step_dir = 1;
-    else
-        step_dir = -1;
-
-    if(state == HG_UP)
-        led_state = 1;
-    else
-        led_state = 0;
+    step_dir = (id == HG_TOP ? 1 : -1);
+    led_state = (state == HG_UP ? 1 : 0);
 
     cube_SetXYZ(x, y, z, led_state);
     cube_SetXYZ(x, y, z + step_dir, !led_state);
@@ -150,24 +122,6 @@ int8_t hg_MoveSand(Hg_Id id, Hg_state state, int8_t x, int8_t y, int8_t z)
 {
     uint32_t random = 0x00;
 
-    //if(id == HG_TOP) {
-    //    if(state == HG_UP) {
-    //        if(cube_GetXYZ(x, y, z))
-    //            return false;
-    //    } else {
-    //        if(!cube_GetXYZ(x, y, z))
-    //    	return false;
-    //    }
-    //} else {//HG_BOTTOM
-    //    if(state == HG_UP) {
-    //        if(cube_GetXYZ(x, y, z))
-    //            return false;
-    //    } else {
-    //        if(!cube_GetXYZ(x, y, z))
-    //            return false;
-    //    }
-    //}
-    
     if(state == HG_UP) {
         if(cube_GetXYZ(x, y, z))
             return false;

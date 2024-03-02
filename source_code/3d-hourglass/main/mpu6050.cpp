@@ -64,9 +64,6 @@ static const char *TAG = "IMU";
 //#include "MPU6050.h" // not necessary if using MotionApps include file
 #include "MPU6050_6Axis_MotionApps20.h"
 
-#define RAD_TO_DEG (180.0/M_PI)
-#define DEG_TO_RAD 0.0174533
-
 MPU6050 mpu;
 
 // MPU control/status vars
@@ -114,7 +111,7 @@ void getYawPitchRoll() {
 	ESP_LOGI(TAG, "roll:%f pitch:%f yaw:%f",_roll, _pitch, _yaw);
 #endif
 	//printf("ypr roll:%3.1f pitch:%3.1f yaw:%3.1f\n",ypr[2] * RAD_TO_DEG, ypr[1] * RAD_TO_DEG, ypr[0] * RAD_TO_DEG);
-	ESP_LOGI(TAG, "roll:%f pitch:%f yaw:%f",ypr[2] * RAD_TO_DEG, ypr[1] * RAD_TO_DEG, ypr[0] * RAD_TO_DEG);
+	//ESP_LOGI(TAG, "roll:%f pitch:%f yaw:%f",ypr[2] * RAD_TO_DEG, ypr[1] * RAD_TO_DEG, ypr[0] * RAD_TO_DEG);
 }
 
 // display real acceleration, adjusted to remove gravity

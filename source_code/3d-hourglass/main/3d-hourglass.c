@@ -134,20 +134,20 @@ void app_main(void)
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 
     //create the task for IMU
-    //xTaskCreate(mpu6050, "IMU", 1024*8, NULL, 10, NULL);
+    xTaskCreate(mpu6050, "IMU", 1024*8, NULL, 10, NULL);
 
     //plane equation x+y+z=10 for hourglass top
     int8_t h, i, j, k;
-    for(h = -3;h >= -13; h--){
-        for(i = -1;i >= -8; i--) {
-            for(j = -1;j >= -8; j--) {
-                for(k = -1;k >= -8; k--) {
-            	if(i + j + k == h)
-            	    cube_SetXYZ(i, j, k, 1);
-                }
-            }
-        }
-    }
+    //for(h = -3;h >= -13; h--){
+    //    for(i = -1;i >= -8; i--) {
+    //        for(j = -1;j >= -8; j--) {
+    //            for(k = -1;k >= -8; k--) {
+    //        	if(i + j + k == h)
+    //        	    cube_SetXYZ(i, j, k, 1);
+    //            }
+    //        }
+    //    }
+    //}
     for(h = 0;h <= 10; h++){
         for(i = 0;i < 8; i++) {
             for(j = 0;j < 8; j++) {
@@ -160,24 +160,159 @@ void app_main(void)
     }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
+    float yaw;
+    int16_t top_sand_num = 0, bottom_sand_num = 0;
+#define UP2DOWN 0
+#define DOWN2UP 1
+#define FALLDOWN 2
+    uint8_t previous_orient = UP2DOWN;
+    uint8_t current_orient = UP2DOWN;
+    uint16_t top_led_num = 0, bottom_led_num = 0;
+    uint8_t trigger_led_state = 0;
     while(1) {
 	vTaskDelay(100 / portTICK_PERIOD_MS);
-        for(i = 7;i >= 0; i--)
-	    for(j = 7;j >= 0; j--)	
-		for(k = 7;k >= 0; k--){
-	            if(i + j + k <= 10)
-			hg_MoveSand(HG_TOP, HG_UP, i, j, k);
-		}
-        for(i = -8;i <= -1; i++)
-	    for(j = -8;j <= -1; j++)	
-		for(k = -8;k <= -1; k++){
-	            if(i + j + k >= -13)
-			hg_MoveSand(HG_BOTTOM, HG_UP, i, j, k);
-		}
-	printf("cnt:%d\n", cnt++);
-	if(cnt % 2 == 0) {
-            cube_SetXYZ(-1, -1, -1, 0);
-	    cube_SetXYZ(0, 0, 0, 0);
+	yaw = ypr[0] * RAD_TO_DEG;
+	printf("yaw:%f\n", yaw);
+	if (yaw <= 45.0 && yaw >= -45.0) { //up to down
+		current_orient = UP2DOWN;
+		trigger_led_state = 0;
+	} else if((yaw >= 135 && yaw <= 180) || (yaw <= -135 && yaw >= -180)) {//down to up
+		current_orient = DOWN2UP;
+		trigger_led_state = 1;
+	} else {//fall down
+		current_orient = FALLDOWN;
 	}
+
+	//we need to redraw the hourglass
+	if((current_orient == UP2DOWN || current_orient == DOWN2UP) && current_orient != previous_orient) {
+        	for(i = -8;i <= -1; i++)
+        	    for(j = -8;j <= -1; j++)
+        	        for(k = -8;k <= -1; k++)
+        	            if(i + j + k >= -13)
+        	                    bottom_sand_num += cube_GetXYZ(i, j, k);
+		top_sand_num = 256 - bottom_sand_num;
+
+		//close all the leds
+        	for(uint8_t i = 0;i < 8; i++)
+        	    for(uint8_t j = 0;j < 8; j++)
+        	        for(uint8_t k = 0;k < 8; k++) 
+        	    	    cube_SetXYZ(i, j, k, 0);
+
+		if(current_orient == DOWN2UP) {
+			//draw the down part
+    			for(h = -3;h >= -13; h--) {
+    			    for(i = -1;i >= -8; i--) {
+    			        for(j = -1;j >= -8; j--) {
+    			            for(k = -1;k >= -8; k--) {
+    			                if(i + j + k == h) {
+    			                    cube_SetXYZ(i, j, k, 1);
+					    bottom_led_num++;
+					    if(bottom_led_num >= bottom_sand_num) {
+					        bottom_led_num = 0;
+						goto down_draw_finish1; 
+					    }
+					}
+    			            }
+    			        }
+    			    }
+    			}
+down_draw_finish1:
+			//draw the top part
+			for(h = 10;h >= 0; h--){
+			    for(i = 0;i <= 7; i++) {
+			        for(j = 0;j <= 7; j++) {
+			            for(k = 0;k <= 7; k++) {
+			                if(i + j + k == h) {
+			                    cube_SetXYZ(i, j, k, 1);
+					    top_led_num++;
+					    if(top_led_num >= top_sand_num) {
+					        top_sand_num = 0;
+						goto top_draw_finish1;
+					    }
+				        }
+			            }
+			        }
+			    }
+			}
+top_draw_finish1:
+		} else { //current_orient == UP2DOWN
+			//draw the down part
+    			for(h = -13;h <= -3; h++) {
+    			    for(i = -1;i >= -8; i--) {
+    			        for(j = -1;j >= -8; j--) {
+    			            for(k = -1;k >= -8; k--) {
+    			                if(i + j + k == h) {
+    			                    cube_SetXYZ(i, j, k, 1);
+					    bottom_led_num++;
+					    if(bottom_led_num >= bottom_sand_num) {
+					        bottom_led_num = 0;
+						goto down_draw_finish2; 
+					    }
+					}
+    			            }
+    			        }
+    			    }
+    			}
+down_draw_finish2:
+			//draw the top part
+			for(h = 0;h <= 10; h++){
+			    for(i = 0;i <= 7; i++) {
+			        for(j = 0;j <= 7; j++) {
+			            for(k = 0;k <= 7; k++) {
+			                if(i + j + k == h) {
+			                    cube_SetXYZ(i, j, k, 1);
+					    top_led_num++;
+					    if(top_led_num >= top_sand_num) {
+					        top_sand_num = 0;
+						goto top_draw_finish2;
+					    }
+				        }
+			            }
+			        }
+			    }
+			}
+top_draw_finish2:
+		}
+	}
+
+	if(current_orient == UP2DOWN) {
+            for(i = 0;i <= 7; i++)
+	        for(j = 0;j <= 7; j++)	
+	    	    for(k = 0;k <= 7; k++){
+	                if(i + j + k <= 10)
+	    		hg_MoveSand(HG_TOP, HG_UP, i, j, k);
+	    	    }
+            for(i = -8;i <= -1; i++)
+	        for(j = -8;j <= -1; j++)	
+	    	    for(k = -8;k <= -1; k++){
+	                if(i + j + k >= -13)
+	    		hg_MoveSand(HG_BOTTOM, HG_DOWN, i, j, k);
+	    	    }
+	} else if(current_orient == DOWN2UP) {
+            for(i = 7;i >= 0; i--)
+	        for(j = 7;j >= 0; j--)	
+	    	    for(k = 7;k >= 0; k--){
+	                if(i + j + k <= 10)
+	    		hg_MoveSand(HG_TOP, HG_DOWN, i, j, k);
+	    	    }
+            for(i = -1;i >= -8; i--)
+	        for(j = -1;j >= -8; j--)	
+	    	    for(k = -1;k >= -8; k--){
+	                if(i + j + k >= -13)
+	    		hg_MoveSand(HG_BOTTOM, HG_UP, i, j, k);
+	    	    }
+	}
+
+	printf("cnt:%d\n", cnt++);
+	top_sand_num = 0;
+	bottom_sand_num = 0;
+
+	if(cnt % 2 == 0) {
+	    cube_SetXYZ(0, 0, 0, trigger_led_state);
+            cube_SetXYZ(-1, -1, -1, !trigger_led_state);
+	}
+
+	//store the current orientation
+	previous_orient = current_orient;
     }
 }

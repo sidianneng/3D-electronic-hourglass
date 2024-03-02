@@ -18,6 +18,9 @@ typedef struct {
 extern "C" {
 #endif
 
+#define RAD_TO_DEG (180.0/M_PI)
+#define DEG_TO_RAD 0.0174533
+
 void mpu6050(void *pvParameters);
 
 #ifdef __cplusplus

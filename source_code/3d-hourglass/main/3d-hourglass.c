@@ -226,7 +226,7 @@ down_draw_finish1:
 			                    cube_SetXYZ(i, j, k, 1);
 					    top_led_num++;
 					    if(top_led_num >= top_sand_num) {
-					        top_sand_num = 0;
+					        top_led_num = 0;
 						goto top_draw_finish1;
 					    }
 				        }
@@ -263,7 +263,7 @@ down_draw_finish2:
 			                    cube_SetXYZ(i, j, k, 1);
 					    top_led_num++;
 					    if(top_led_num >= top_sand_num) {
-					        top_sand_num = 0;
+					        top_led_num = 0;
 						goto top_draw_finish2;
 					    }
 				        }

@@ -79,9 +79,9 @@ static void led_cube_display(void* arg)
 	    }
 	    for(uint8_t temp = 0;temp < 8; temp++) {
 	        if(temp == level)
-	            gpio_set_level((gpio_num_t)g_gpios[temp], 0);
-	        else
 	            gpio_set_level((gpio_num_t)g_gpios[temp], 1);
+	        else
+	            gpio_set_level((gpio_num_t)g_gpios[temp], 0);
 	    }
 	    vTaskDelay(2 / portTICK_PERIOD_MS);
         }

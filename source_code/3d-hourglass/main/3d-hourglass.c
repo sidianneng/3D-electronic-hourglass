@@ -71,7 +71,7 @@ static void led_cube_display(void* arg)
 	    for(uint8_t line = 0;line < 8; line++) {
 	        data_tmp = ledcube_data[level * 8 + line];
 	        for(uint8_t bit = 0;bit < 8; bit++) {
-	            gpio_set_level((gpio_num_t)rd_gpios[bit], !(data_tmp & 0x01));
+	            gpio_set_level((gpio_num_t)rd_gpios[bit], (data_tmp & 0x01));
 		    data_tmp = (data_tmp >> 1);
                 }
 	        gpio_set_level((gpio_num_t)l_gpios[line], 1);

@@ -48,8 +48,6 @@ int l_gpios[8] = {
     CONFIG_GPIO_L_7,
 };
 
-static QueueHandle_t ledcube_data_queue = NULL;
-
 static uint8_t ledcube_data[64] = {0x0};
 
 extern float ypr[3];
@@ -59,8 +57,6 @@ static const char *TAG = "3d-hourglass";
 static void led_cube_display(void* arg)
 {
     static uint8_t data_tmp = 0x00;
-
-    //get new ledcube data from queue
 
     //display ledcube
     for(;;) {
@@ -132,8 +128,6 @@ void app_main(void)
         gpio_set_level((gpio_num_t)l_gpios[i], 1);
     }
 
-    //create the data queue for led cube
-    ledcube_data_queue = xQueueCreate(64, sizeof(uint8_t)); 
     //create the task for LED display 
     xTaskCreate(led_cube_display, "led_cube_display", 2048, NULL, 10, NULL);
 

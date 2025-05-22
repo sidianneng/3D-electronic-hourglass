@@ -52,6 +52,10 @@ static uint8_t ledcube_data[64] = {0x0};
 
 extern float ypr[3];
 
+#define LED_CTRL1 26
+#define LED_CTRL2 48
+#define LED_CTRL3 47
+
 static const char *TAG = "3d-hourglass";
 
 static void led_cube_display(void* arg)
@@ -105,12 +109,19 @@ void app_main(void)
     //bit mask of the pins that you want to set,e.g.GPIO18/19
     for(uint8_t i = 0;i < 8; ++i)
         io_conf.pin_bit_mask |= ((1ULL << rd_gpios[i]) | (1ULL << g_gpios[i]) | (1ULL << l_gpios[i]));
+    //init led control gpio
+    io_conf.pin_bit_mask |= ((1ULL << LED_CTRL1) | (1ULL << LED_CTRL2) | (1ULL << LED_CTRL3));
     //disable pull-down mode
     io_conf.pull_down_en = (gpio_pulldown_t)0;
     //disable pull-up mode
     io_conf.pull_up_en = (gpio_pullup_t)0;
     //configure GPIO with the given settings
     gpio_config(&io_conf);
+
+    //Close leds by default
+    gpio_set_level(LED_CTRL1, 0);
+    gpio_set_level(LED_CTRL2, 0);
+    gpio_set_level(LED_CTRL3, 0);
 
     //Init i2c
     start_i2c();

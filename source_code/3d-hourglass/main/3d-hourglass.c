@@ -26,14 +26,14 @@ int rd_gpios[8] = {
 
 //active low
 int g_gpios[8] = {
-    CONFIG_GPIO_G_0,
-    CONFIG_GPIO_G_1,
-    CONFIG_GPIO_G_2,
-    CONFIG_GPIO_G_3,
-    CONFIG_GPIO_G_4,
-    CONFIG_GPIO_G_5,
-    CONFIG_GPIO_G_6,
     CONFIG_GPIO_G_7,
+    CONFIG_GPIO_G_6,
+    CONFIG_GPIO_G_5,
+    CONFIG_GPIO_G_4,
+    CONFIG_GPIO_G_3,
+    CONFIG_GPIO_G_2,
+    CONFIG_GPIO_G_1,
+    CONFIG_GPIO_G_0,
 };
 
 //active high
